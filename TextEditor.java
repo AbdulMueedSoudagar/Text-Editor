@@ -32,8 +32,11 @@ public class TextEditor extends JFrame implements ActionListener{
 	JMenuItem openItem;
 	JMenuItem saveItem;
 	JMenuItem exitItem;
+
 	
 	TextEditor(){
+		System.out.println("Welcome to TextPad!");
+		
 	 	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	 	this.setTitle("TextPad");
 	 	this.setSize(500,500);
