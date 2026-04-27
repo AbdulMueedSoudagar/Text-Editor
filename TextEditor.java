@@ -37,7 +37,8 @@ public class TextEditor extends JFrame implements ActionListener{
 	TextEditor(){
 		System.out.println("Welcome to TextEditor!!!");
 		System.out.println("This is a simple text editor created using Java Swing.");
-		
+		System.out.println("You can use it to create and edit text files, change the font and color of the text, and save your work.");
+
 	 	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	 	this.setTitle("TextEditor");
 	 	this.setSize(500,500);
