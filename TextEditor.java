@@ -36,6 +36,7 @@ public class TextEditor extends JFrame implements ActionListener{
 	
 	TextEditor(){
 		System.out.println("Welcome to TextEditor!!!");
+		System.out.println("This is a simple text editor created using Java Swing.");
 		
 	 	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	 	this.setTitle("TextEditor");
