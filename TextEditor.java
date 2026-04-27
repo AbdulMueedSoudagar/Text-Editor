@@ -35,10 +35,10 @@ public class TextEditor extends JFrame implements ActionListener{
 
 	
 	TextEditor(){
-		System.out.println("Welcome to TextPad!");
+		System.out.println("Welcome to TextEditor!!!");
 		
 	 	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	 	this.setTitle("TextPad");
+	 	this.setTitle("TextEditor");
 	 	this.setSize(500,500);
 	 	this.setLayout(new FlowLayout());
 	 	this.setLocationRelativeTo(null);
