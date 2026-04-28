@@ -1,13 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="
-http://maven.apache.org/POM/4.0.0
-http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+<project xmlns="http://maven.apache.org/POM/4.0.0">
 <modelVersion>4.0.0</modelVersion>
 
 <groupId>demo</groupId>
-<artifactId>my-java-app</artifactId>
+<artifactId>javaapp</artifactId>
 <version>1.0</version>
 
 <dependencies>
@@ -20,5 +15,15 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 </dependency>
 
 </dependencies>
+
+<build>
+<plugins>
+<plugin>
+<groupId>org.apache.maven.plugins</groupId>
+<artifactId>maven-jar-plugin</artifactId>
+<version>3.2.2</version>
+</plugin>
+</plugins>
+</build>
 
 </project>
