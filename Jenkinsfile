@@ -2,11 +2,6 @@ pipeline {
 
  agent any
 
- tools {
-   jdk 'jdk21'
-   maven 'maven3'
- }
-
  stages {
 
    stage('Checkout') {
@@ -16,10 +11,14 @@ pipeline {
    }
 
    stage('Compile') {
-      steps {
-         sh 'mvn compile'
-      }
-   }
+    steps {
+        sh '''
+        export JAVA_HOME=/opt/java/openjdk
+        export PATH=$JAVA_HOME/bin:$PATH
+        mvn compile
+        '''
+        }
+    }
 
    stage('Test') {
       steps {
@@ -41,7 +40,6 @@ pipeline {
          '''
       }
    }
-
  }
 
 }
