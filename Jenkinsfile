@@ -1,49 +1,85 @@
 pipeline {
 
- tools {
-    maven 'maven3'
- }
+agent any
 
- agent any
+environment {
+ IMAGE_NAME = "abdulm16/newJavaApp"
+ TAG = "${BUILD_NUMBER}"
+}
 
- stages {
+stages {
 
-   stage('Checkout') {
-      steps {
+ stage('Checkout'){
+   steps {
         git branch: 'main', url: 'https://github.com/AbdulMueedSoudagar/Text-Editor.git'
-      }
-   }
-
-   stage('Compile') {
-    steps {
-        sh '''
-        export JAVA_HOME=/opt/java/openjdk
-        export PATH=$JAVA_HOME/bin:$PATH
-        mvn compile
-        '''
-        }
     }
+ }
 
-   stage('Test') {
-      steps {
-         sh 'mvn test'
-      }
-   }
-
-   stage('Package') {
-      steps {
-         sh 'mvn package'
-      }
-   }
-
-   stage('Deploy to Staging') {
-      steps {
-         sh '''
-         mkdir -p /tmp/staging
-         cp target/*.jar /tmp/staging/
-         '''
-      }
+ stage('Build'){
+   steps{
+      sh 'mvn clean package'
    }
  }
+
+ stage('Run Tests'){
+   steps{
+      sh 'mvn test'
+   }
+ }
+
+ stage('Build Docker Image'){
+   steps{
+      sh '''
+      docker build -t $IMAGE_NAME:$TAG .
+      '''
+   }
+ }
+
+ stage('Container Validation Test'){
+   steps{
+      sh '''
+      docker run --rm $IMAGE_NAME:$TAG
+      '''
+   }
+ }
+
+ stage('Push To DockerHub') {
+
+   steps {
+
+    withCredentials([
+      usernamePassword(
+      credentialsId:'dockerhub-creds',
+      usernameVariable:'abdulm16',
+      passwordVariable:'Android@123'
+      )
+    ]) {
+
+      sh '''
+      echo $PASS | podman login -u $USER --password-stdin
+
+      docker push $IMAGE_NAME:$TAG
+
+      podman logout
+      '''
+     }
+
+   }
+
+ }
+
+}
+
+post {
+
+success {
+  echo 'Pipeline Success'
+}
+
+failure {
+  echo 'Pipeline Failed'
+}
+
+}
 
 }
