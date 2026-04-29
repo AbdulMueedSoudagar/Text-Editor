@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = "max/newJavaApp"
+        IMAGE_NAME = "abdulm16/newJavaApp"
         TAG = "${BUILD_NUMBER}"
     }
 
@@ -15,8 +15,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/max/Text-Editor.git'
+                git branch: 'main', url: 'https://github.com/AbdulMueedSoudagar/Text-Editor.git'
             }
         }
 
