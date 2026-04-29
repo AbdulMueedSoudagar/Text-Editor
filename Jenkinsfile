@@ -1,89 +1,76 @@
 pipeline {
 
-agent any
+    agent any
 
-tools {
-    maven 'maven3'
-}
-
-environment {
- IMAGE_NAME = "abdulm16/newJavaApp"
- TAG = "${BUILD_NUMBER}"
-}
-
-stages {
-
- stage('Checkout'){
-   steps {
-        git branch: 'main', url: 'https://github.com/AbdulMueedSoudagar/Text-Editor.git'
+    tools {
+        maven 'maven3'
     }
- }
 
- stage('Build'){
-   steps{
-      sh 'mvn clean package'
-   }
- }
+    environment {
+        IMAGE_NAME = "max/newJavaApp"
+        TAG = "${BUILD_NUMBER}"
+    }
 
- stage('Run Tests'){
-   steps{
-      sh 'mvn test'
-   }
- }
+    stages {
 
- stage('Build Docker Image'){
-   steps{
-      sh '''
-      podman build -t $IMAGE_NAME:$TAG .
-      '''
-   }
- }
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/max/Text-Editor.git'
+            }
+        }
 
- stage('Container Validation Test'){
-   steps{
-      sh '''
-      podman run --rm $IMAGE_NAME:$TAG
-      '''
-   }
- }
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
 
- stage('Push To DockerHub') {
+        stage('Run Tests') {
+            steps {
+                sh 'mvn test'
+            }
+        }
 
-   steps {
+        stage('Build Docker Image') {
+            steps {
+                sh """
+                    docker build -t $IMAGE_NAME:$TAG .
+                """
+            }
+        }
 
-    withCredentials([
-      usernamePassword(
-      credentialsId:'dockerhub-creds',
-      usernameVariable:'abdulm16',
-      passwordVariable:'Android@123'
-      )
-    ]) {
+        stage('Container Validation Test') {
+            steps {
+                sh """
+                    docker run --rm $IMAGE_NAME:$TAG
+                """
+            }
+        }
 
-      sh '''
-      echo $PASS | podman login -u $USER --password-stdin
+        stage('Push To DockerHub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'USERNAME',
+                    passwordVariable: 'PASSWORD'
+                )]) {
+                    sh """
+                        echo $PASSWORD | docker login -u $USERNAME --password-stdin
+                        docker push $IMAGE_NAME:$TAG
+                        docker logout
+                    """
+                }
+            }
+        }
+    }
 
-      podman push $IMAGE_NAME:$TAG
-
-      podman logout
-      '''
-     }
-
-   }
-
- }
-
-}
-
-post {
-
-success {
-  echo 'Pipeline Success'
-}
-
-failure {
-  echo 'Pipeline Failed'
-}
-
-}
-
+    post {
+        success {
+            echo 'Pipeline Success'
+        }
+        failure {
+            echo 'Pipeline Failed'
+        }
+    }
 }
