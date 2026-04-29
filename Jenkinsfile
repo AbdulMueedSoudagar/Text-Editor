@@ -34,7 +34,7 @@ stages {
  stage('Build Docker Image'){
    steps{
       sh '''
-      docker build -t $IMAGE_NAME:$TAG .
+      podman build -t $IMAGE_NAME:$TAG .
       '''
    }
  }
@@ -42,7 +42,7 @@ stages {
  stage('Container Validation Test'){
    steps{
       sh '''
-      docker run --rm $IMAGE_NAME:$TAG
+      podman run --rm $IMAGE_NAME:$TAG
       '''
    }
  }
@@ -62,7 +62,7 @@ stages {
       sh '''
       echo $PASS | podman login -u $USER --password-stdin
 
-      docker push $IMAGE_NAME:$TAG
+      podman push $IMAGE_NAME:$TAG
 
       podman logout
       '''
