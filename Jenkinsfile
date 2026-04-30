@@ -1,75 +1,44 @@
 pipeline {
-
-    agent any
-
-    tools {
-        maven 'maven3'
-    }
-
-    environment {
-        IMAGE_NAME = "abdulm16/newJavaApp"
-        TAG = "${BUILD_NUMBER}"
-    }
+    agent none
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/AbdulMueedSoudagar/Text-Editor.git'
-            }
-        }
+        stage('Build on Maven Agent') {
+            agent { label 'maven' }
 
-        stage('Build') {
             steps {
+                echo "Running on Maven Agent"
+                sh 'hostname'
+                sh 'mvn -v'
                 sh 'mvn clean package'
             }
         }
 
-        stage('Run Tests') {
+        stage('Check Artifact (Maven Agent)') {
+            agent { label 'maven' }
+
             steps {
-                sh 'mvn test'
+                sh 'ls -l target'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Run Python Agent') {
+            agent { label 'python' }
+
             steps {
-                sh """
-                    docker build -t $IMAGE_NAME:$TAG .
-                """
+                echo "Running on Python Agent"
+                sh 'hostname'
+                sh 'python3 --version'
+                sh 'ls -l'
             }
         }
 
-        stage('Container Validation Test') {
-            steps {
-                sh """
-                    docker run --rm $IMAGE_NAME:$TAG
-                """
-            }
-        }
+        stage('Try Access Artifact (Will Fail)') {
+            agent { label 'python' }
 
-        stage('Push To DockerHub') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds',
-                    usernameVariable: 'USERNAME',
-                    passwordVariable: 'PASSWORD'
-                )]) {
-                    sh """
-                        echo $PASSWORD | docker login -u $USERNAME --password-stdin
-                        docker push $IMAGE_NAME:$TAG
-                        docker logout
-                    """
-                }
+                sh 'ls -l target'
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline Success'
-        }
-        failure {
-            echo 'Pipeline Failed'
         }
     }
 }
